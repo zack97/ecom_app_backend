@@ -8,12 +8,15 @@ const authRoutes = require("./routes/auth");
 
 dotenv.config();
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("DB connected"))
-  .catch((err) => console.log(err));
+  .catch((err) => console.error("DB connection error:", err));
 
 const allowedOrigins = [
   "http://localhost:8081",
@@ -21,8 +24,8 @@ const allowedOrigins = [
 ];
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -30,10 +33,10 @@ const corsOptions = {
   },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   allowedHeaders: "Content-Type,Authorization",
+  credentials: true, // If you need to allow cookies or authorization headers
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
@@ -43,8 +46,12 @@ app.use("/api/users", require("./routes/user"));
 app.use("/api/orders", require("./routes/order"));
 app.use("/api/payments", require("./routes/payment"));
 
-app.listen(process.env.PORT || port, () =>
-  console.log(`Example app listening on port ${process.env.PORT || port}!`)
-);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error("Server Error:", err.message);
+  res.status(500).send("Something went wrong!");
+});
 
-//stripe after
+app.listen(port, () => console.log(`Server running on port ${port}`));
+
+//stripe integration (placeholder)
