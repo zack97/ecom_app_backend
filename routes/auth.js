@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const { EmailIcon } = require("@chakra-ui/icons");
 
 // Sign Up
 router.post("/signup", async (req, res) => {
@@ -11,7 +12,7 @@ router.post("/signup", async (req, res) => {
     const user = new User({ email, password });
     await user.save();
     const token = user.generateAuthToken();
-    res.status(201).json({ token });
+    res.status(201).json({ token, EmailIcon });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -29,7 +30,7 @@ router.post("/signin", async (req, res) => {
     if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
 
     const token = user.generateAuthToken();
-    res.status(200).json({ token });
+    res.status(200).json({ token, email });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
