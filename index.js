@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
 const productRouter = require("./routes/products");
+const authRoutes = require("./routes/auth");
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 app.use("/api/products", productRouter);
+app.use("/api/auth", authRoutes);
 app.use("/api/users", require("./routes/user"));
 app.use("/api/orders", require("./routes/order"));
 app.use("/api/payments", require("./routes/payment"));
