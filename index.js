@@ -20,7 +20,7 @@ mongoose
 
 const allowedOrigins = [
   "http://localhost:8081",
-  "https://ecommerceapp-1.netlify.app/",
+  "https://ecommerceapp-1.netlify.app",
 ];
 
 const corsOptions = {
